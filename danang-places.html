@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Địa điểm ăn chơi Đà Nẵng</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
+  header { background: #fff; border-bottom: 1px solid #e5e3dc; padding: 20px 24px 16px; position: sticky; top: 0; z-index: 10; }
+  header h1 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+  header p { font-size: 12px; color: #888; margin-bottom: 12px; }
+  .search-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .search-row input { flex: 1; min-width: 180px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 99px; font-size: 14px; outline: none; background: #f9f8f5; }
+  .search-row input:focus { border-color: #999; background: #fff; }
+  .count { font-size: 12px; color: #999; white-space: nowrap; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 24px 0; }
+  .tab { padding: 6px 16px; border-radius: 99px; border: 1px solid #ddd; font-size: 13px; cursor: pointer; background: #fff; color: #555; transition: all 0.15s; }
+  .tab:hover { background: #f0ede6; }
+  .tab.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .legend { font-size: 11px; color: #aaa; display: flex; align-items: center; gap: 5px; padding: 10px 24px 0; }
+  .new-dot { width: 7px; height: 7px; border-radius: 50%; background: #1D9E75; display: inline-block; flex-shrink: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; padding: 16px 24px 32px; }
+  .card { background: #fff; border: 1px solid #e8e6e0; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .card-name { font-size: 14px; font-weight: 600; line-height: 1.4; color: #1a1a1a; }
+  .badge { font-size: 11px; padding: 3px 9px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
+  .badge-food { background: #FFF3E0; color: #8B4A00; }
+  .badge-cafe { background: #E6F7F1; color: #0A6645; }
+  .badge-farm { background: #EBF5E0; color: #2D6A0A; }
+  .card-note { font-size: 12px; color: #666; line-height: 1.6; }
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag { font-size: 11px; padding: 3px 8px; border-radius: 99px; background: #f3f2ee; color: #777; }
+  .map-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #2563eb; text-decoration: none; margin-top: 2px; }
+  .map-link:hover { text-decoration: underline; }
+  .map-icon { width: 13px; height: 13px; fill: currentColor; flex-shrink: 0; }
+  .empty { text-align: center; color: #bbb; font-size: 14px; padding: 3rem; grid-column: 1/-1; }
+  @media (max-width: 480px) {
+    header { padding: 16px 16px 12px; }
+    .tabs { padding: 10px 16px 0; }
+    .legend { padding: 8px 16px 0; }
+    .grid { padding: 12px 16px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Địa điểm ăn chơi Đà Nẵng</h1>
+  <p>Do dân địa phương giới thiệu</p>
+  <div class="search-row">
+    <input type="text" id="search" placeholder="Tìm địa điểm, món ăn, tag..." oninput="render()" />
+    <span class="count" id="count"></span>
+  </div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+<div class="legend"><span class="new-dot"></span> mới thêm</div>
+<div class="grid" id="grid"></div>
+
+<script>
+const places = [
+  { name: "Nhà hàng Chân Trời Góc Bể", cat: "Ăn uống", tags:["view sông","hải sản","hoàng hôn"], note: "Local food hải sản & các món, view sông đẹp — đi trước hoàng hôn để ngắm view" },
+  { name: "Nhà hàng hải sản Bé Anh", cat: "Ăn uống", tags:["hải sản tươi"], note: "Chuyên hải sản tươi, giá nhỉnh hơn quán bình dân 1 chút" },
+  { name: "Nhà hàng Hàn Quốc Veteran", cat: "Ăn uống", tags:["đồ Hàn","đặt bàn trước","buổi tối"], note: "Đồ Hàn ngon, chỉ bán buổi tối — cần đặt bàn trước" },
+  { name: "Nhà hàng Donald Trung", cat: "Ăn uống", tags:["đặc sản","bánh tráng cuốn"], note: "Bánh tráng cuốn thịt heo mắm nêm, bánh nậm, bánh lọc" },
+  { name: "Bếp của ngoại", cat: "Ăn uống", tags:["gia đình","thuần Việt"], note: "Các món ăn gia đình kiểu mẹ nấu — bình dị, ngon lành" },
+  { name: "Quán cô Hồng (CN Nguyễn Văn Thoại)", cat: "Ăn uống", tags:["đặc sản Đà Nẵng","gỏi cá","mì quảng"], note: "Cá nục cuốn, gỏi cá, bún mắm, mì quảng, bánh tráng cuốn — đi chi nhánh NVT vì đẹp & rộng hơn" },
+  { name: "East West Brewing Co.", cat: "Ăn uống", tags:["bia tươi","view biển","đồ Tây"], note: "Đồ Tây & local, bia tươi, view biển, style modern" },
+  { name: "Bánh xèo bà Dưỡng", cat: "Ăn uống", tags:["local food","bánh xèo","nem lụi"], note: "Quán local — bánh xèo & nem lụi chuẩn vị Đà Nẵng" },
+  { name: "Bún chả cá Bà Hờn", cat: "Ăn uống", tags:["ăn sáng"], note: "Điểm ăn sáng ngon kiểu địa phương" },
+  { name: "Du Thuyền Marina Restaurant Đà Nẵng", cat: "Ăn uống", tags:["view sông Hàn","cầu rồng","buổi tối"], note: "Cà phê & ăn uống — T7/CN tầm 9h có cầu rồng phun lửa, view sông Hàn" },
+  { name: "Bánh ướt Bà Sửu Trần Bạch Đằng", cat: "Ăn uống", tags:["ăn sáng","local food","bánh ướt"], note: "Bánh ướt địa phương trên đường Trần Bạch Đằng" },
+  { name: "Bếp Cuốn Trần Bạch Đằng", cat: "Ăn uống", tags:["đồ cuốn","Trần Bạch Đằng"], note: "Các món cuốn trên đường Trần Bạch Đằng" },
+  { name: "The Sodam Lotte Mart", cat: "Ăn uống", tags:["đồ Hàn","Lotte Mart"], note: "Nhà hàng Hàn Quốc trong khu Lotte Mart Đà Nẵng" },
+  { name: "Salmon Club", cat: "Ăn uống", tags:["cá hồi","đồ Nhật","hải sản"], note: "Chuyên các món từ cá hồi", isNew: true },
+  { name: "Hải Sản Phát Mỹ Hạnh", cat: "Ăn uống", tags:["hải sản","bình dân"], note: "Quán hải sản bình dân, tươi ngon", isNew: true },
+  { name: "Chợ Cá Gỗ", cat: "Ăn uống", tags:["mì tôm mực","view biển","trải nghiệm"], note: "Ăn mì tôm mực, ngắm biển — trải nghiệm địa phương độc đáo", isNew: true },
+  { name: "B&B Bakery", cat: "Cà phê", tags:["bánh ngọt","ngoài trời","chill"], note: "Bánh ngọt, cà phê, nước ép — ban ngày nhiều bánh, tối ngồi ngoài trời cực chill" },
+  { name: "Dreamer", cat: "Cà phê", tags:["sân vườn","buổi tối","có máy lạnh"], note: "Sân vườn xanh mát — nên đi buổi tối, vẫn có phòng máy lạnh" },
+  { name: "Sơn Trà Marina", cat: "Cà phê", tags:["view Sơn Trà","bán đảo"], note: "Cà phê & ăn uống nhẹ, view hướng bán đảo Sơn Trà" },
+  { name: "Normad", cat: "Cà phê", tags:["chụp hình","decor đẹp"], note: "Quán nhỏ nhắn nhưng có góc decor đẹp để chụp hình" },
+  { name: "Reply 1988", cat: "Cà phê", tags:["retro","chụp hình","decor đẹp"], note: "Cà phê phong cách retro Hàn Quốc lấy cảm hứng từ phim Reply 1988" },
+  { name: "Katinat Ocean View", cat: "Cà phê", tags:["view biển","chain"], note: "Chi nhánh Katinat có view biển — xịn hơn hẳn so với các chi nhánh thông thường" },
+  { name: "Katinat The Film More", cat: "Cà phê", tags:["chụp hình","decor đẹp","concept phim"], note: "Chi nhánh Katinat concept phim ảnh, góc decor độc đáo để chụp hình" },
+  { name: "Magicha.Stand", cat: "Cà phê", tags:["trà","matcha","đồ uống"], note: "Quán trà / matcha stand, đồ uống theo phong cách Nhật" },
+  { name: "Avostation", cat: "Cà phê", tags:["healthy","avocado","đồ uống"], note: "Cà phê & đồ uống healthy, nổi bật với các món từ bơ" },
+  { name: "hôm nay eatery cafe", cat: "Cà phê", tags:["eatery","chill","đồ ăn nhẹ"], note: "Kết hợp cà phê & ăn nhẹ, không gian chill" },
+  { name: "Bounce Beach", cat: "Cà phê", tags:["view biển","beach","chill"], note: "Cà phê view biển, không gian thoáng mát" },
+  { name: "Cá Chuồn Space", cat: "Cà phê", tags:["concept","chụp hình","chill"], note: "Không gian cà phê mang tên cá chuồn — đặc trưng của biển Đà Nẵng" },
+  { name: "Thung Chai", cat: "Cà phê", tags:["chill","decor","không gian xanh"], note: "Không gian cà phê mộc mạc, xanh mát kiểu thung lũng" },
+  { name: "Làng Toom Sara", cat: "Farm", tags:["cho bé","farm","ngoại ô"], note: "Hơi xa (khoảng 1 tiếng) — farm vui chơi phù hợp cho bé nhỏ" },
+];
+
+function mapsLink(name) {
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name + ' Đà Nẵng');
+}
+
+const cats = ["Tất cả", "Ăn uống", "Cà phê", "Farm"];
+let activeTab = "Tất cả";
+
+function buildTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = cats.map(c => {
+    const n = c === "Tất cả" ? places.length : places.filter(p => p.cat === c).length;
+    return '<button class="tab' + (c === activeTab ? ' active' : '') + '" onclick="setTab(\'' + c + '\')">' + c + ' <span style="opacity:0.55;font-size:11px;">' + n + '</span></button>';
+  }).join('');
+}
+
+function setTab(c) { activeTab = c; render(); }
+
+function render() {
+  buildTabs();
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = places.filter(p => {
+    const matchCat = activeTab === "Tất cả" || p.cat === activeTab;
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.note.toLowerCase().includes(q) || p.tags.some(t => t.includes(q));
+    return matchCat && matchQ;
+  });
+  document.getElementById('count').textContent = filtered.length + ' địa điểm';
+  const badgeCls = { "Ăn uống": "badge-food", "Cà phê": "badge-cafe", "Farm": "badge-farm" };
+  document.getElementById('grid').innerHTML = filtered.length ? filtered.map(p =>
+    '<div class="card">' +
+      '<div class="card-top">' +
+        '<span class="card-name">' + p.name + (p.isNew ? ' <span class="new-dot"></span>' : '') + '</span>' +
+        '<span class="badge ' + badgeCls[p.cat] + '">' + p.cat + '</span>' +
+      '</div>' +
+      '<p class="card-note">' + p.note + '</p>' +
+      '<div class="tags">' + p.tags.map(t => '<span class="tag">' + t + '</span>').join('') + '</div>' +
+      '<a class="map-link" href="' + mapsLink(p.name) + '" target="_blank">' +
+        '<svg class="map-icon" viewBox="0 0 16 16"><path d="M8 1a5 5 0 0 0-5 5c0 3.5 5 9 5 9s5-5.5 5-9a5 5 0 0 0-5-5zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>' +
+        'Mở Google Maps' +
+      '</a>' +
+    '</div>'
+  ).join('') : '<div class="empty">Không tìm thấy địa điểm nào</div>';
+}
+
+render();
+</script>
+</body>
+</html>
