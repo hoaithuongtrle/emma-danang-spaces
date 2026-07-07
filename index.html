@@ -1,1 +1,488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Địa điểm ăn chơi Đà Nẵng & Hội An 🌴</title>
+<style>
+  :root{
+    --bg:#fbf7f0; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8377;
+    --accent:#e07a3f; --accent2:#f2a65a; --gold:#f5b400; --line:#efe7da;
+    --hoian:#c98a5e; --danang:#3a86b8; --shadow:0 6px 20px rgba(60,40,20,.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
 
+  /* ---------- Header ---------- */
+  header{background:linear-gradient(135deg,#e07a3f 0%,#f2a65a 55%,#f5c26b 100%);
+         color:#fff;padding:28px 18px 22px;text-align:center;position:relative;overflow:hidden}
+  header h1{margin:0 0 4px;font-size:clamp(22px,4.5vw,34px);font-weight:800;letter-spacing:.3px}
+  header p{margin:0;opacity:.95;font-size:14px}
+  .subtag{display:inline-block;margin-top:8px;background:rgba(255,255,255,.22);
+          padding:4px 12px;border-radius:20px;font-size:12.5px;backdrop-filter:blur(4px)}
+
+  /* ---------- Controls ---------- */
+  .controls{position:sticky;top:0;z-index:50;background:rgba(251,247,240,.92);
+            backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 14px}
+  .ctrl-wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+  .addr-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .addr-row input[type=text]{flex:1;min-width:200px;padding:11px 14px;border:1px solid var(--line);
+        border-radius:12px;font-size:14.5px;background:#fff;outline:none}
+  .addr-row input[type=text]:focus{border-color:var(--accent)}
+  .btn{border:none;cursor:pointer;padding:11px 16px;border-radius:12px;font-size:14px;font-weight:600;
+       display:inline-flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:#c9682f}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .status{font-size:12.5px;color:var(--muted);min-height:16px}
+  .status b{color:var(--accent)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chip{border:1px solid var(--line);background:#fff;padding:7px 13px;border-radius:20px;font-size:13px;
+        cursor:pointer;transition:.15s;color:var(--muted);font-weight:600}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.city-hoian.active{background:var(--hoian);border-color:var(--hoian)}
+  .chip.city-danang.active{background:var(--danang);border-color:var(--danang)}
+  select.sortsel{padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;
+        font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;margin-left:auto}
+  .mustonly{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+        cursor:pointer;color:var(--muted);user-select:none}
+  .mustonly input{width:16px;height:16px;accent-color:var(--accent)}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1180px;margin:0 auto;padding:20px 14px 60px}
+  .city-head{display:flex;align-items:center;gap:10px;margin:26px 4px 14px}
+  .city-head h2{margin:0;font-size:21px;font-weight:800}
+  .city-head .count{font-size:13px;color:var(--muted);font-weight:600}
+  .city-head .bar{flex:1;height:2px;border-radius:2px;background:var(--line)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+
+  /* ---------- Card ---------- */
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
+        display:flex;flex-direction:column;border:1px solid var(--line);transition:.2s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(60,40,20,.13)}
+  .card.must{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+
+  /* carousel */
+  .carousel{position:relative;aspect-ratio:16/10;background:#eee;overflow:hidden}
+  .track{display:flex;height:100%;transition:transform .35s ease}
+  .slide{min-width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center}
+  .slide img{width:100%;height:100%;object-fit:cover;display:block}
+  .slide.cover{color:#fff;flex-direction:column;gap:6px}
+  .slide.cover .em{font-size:52px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+  .slide.cover .nm{font-weight:800;font-size:17px;text-align:center;padding:0 14px;
+        text-shadow:0 2px 8px rgba(0,0,0,.35)}
+  .carousel .nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;
+        background:rgba(0,0,0,.4);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;
+        align-items:center;justify-content:center;opacity:0;transition:.2s;z-index:3}
+  .carousel:hover .nav{opacity:1}
+  .carousel .nav.prev{left:8px} .carousel .nav.next{right:8px}
+  .dots{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:5px;justify-content:center;z-index:3}
+  .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);transition:.2s}
+  .dots i.on{background:#fff;width:16px;border-radius:4px}
+  .badge-km{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.94);color:var(--ink);
+        font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:20px;z-index:3;box-shadow:var(--shadow)}
+  .badge-must{position:absolute;top:10px;right:10px;background:var(--gold);color:#4a3500;font-size:11.5px;
+        font-weight:800;padding:5px 9px;border-radius:20px;z-index:3;box-shadow:var(--shadow)}
+  .illus{position:absolute;bottom:9px;left:10px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;
+        font-weight:600;padding:2px 8px;border-radius:12px;z-index:3}
+  .city-tag{position:absolute;bottom:9px;right:10px;font-size:11px;font-weight:700;color:#fff;
+        padding:3px 9px;border-radius:20px;z-index:3;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+
+  /* body */
+  .cbody{padding:14px 15px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .ctitle{display:flex;align-items:flex-start;gap:8px}
+  .ctitle .em{font-size:22px;line-height:1}
+  .ctitle h3{margin:0;font-size:16.5px;font-weight:800;flex:1}
+  .tags{display:flex;flex-wrap:wrap;gap:5px}
+  .tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:14px;background:#f5efe4;color:#9a7b52}
+  .tag.warn{background:#fff2e0;color:#c9682f}
+  .tag.cat{background:#eef4f8;color:#3a7ba0}
+  .notes{font-size:13.3px;color:#5c564c;margin:0}
+  .notes .dish{color:var(--muted);font-size:12.6px}
+
+  .actions{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:6px;border-top:1px dashed var(--line)}
+  .rate-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .stars{display:flex;gap:2px;font-size:20px;cursor:pointer;user-select:none}
+  .stars span{color:#dcd3c4;transition:.1s}
+  .stars span.on{color:var(--gold)}
+  .stars span:hover{transform:scale(1.15)}
+  .must-btn{border:1px solid var(--line);background:#fff;color:var(--muted);font-size:12.5px;font-weight:700;
+        padding:7px 12px;border-radius:20px;cursor:pointer;transition:.15s;display:inline-flex;gap:5px;align-items:center}
+  .must-btn.on{background:var(--gold);color:#4a3500;border-color:var(--gold)}
+  .link-row{display:flex;gap:7px;flex-wrap:wrap}
+  .lnk{flex:1;min-width:0;text-align:center;font-size:12px;font-weight:700;padding:8px 6px;border-radius:10px;
+        background:#f7f2e9;color:#7a6a52;cursor:pointer;border:none;transition:.15s;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lnk:hover{background:var(--accent);color:#fff}
+  .lnk.on{background:var(--accent);color:#fff}
+  .mapwrap{max-height:0;overflow:hidden;transition:max-height .3s ease;border-radius:12px;margin-top:0}
+  .mapwrap.open{max-height:260px;margin-top:2px}
+  .mapwrap iframe{width:100%;height:230px;border:0;border-radius:12px;display:block}
+  .mapwrap .maplink{display:block;text-align:center;font-size:12px;font-weight:700;padding:7px;
+        background:#f7f2e9;color:#7a6a52;border-radius:0 0 12px 12px}
+
+  footer{text-align:center;padding:30px 16px;color:var(--muted);font-size:12.5px}
+  .empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:15px}
+  @media(max-width:520px){ .grid{grid-template-columns:1fr} select.sortsel{margin-left:0;width:100%} }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌴 Địa điểm ăn chơi Đà Nẵng &amp; Hội An</h1>
+  <p>Cẩm nang ăn uống – check-in do dân địa phương giới thiệu</p>
+  <span class="subtag" id="statChip">☕ Đang tải…</span>
+</header>
+
+<div class="controls">
+  <div class="ctrl-wrap">
+    <div class="addr-row">
+      <input type="text" id="addrInput" placeholder="📍 Nhập địa chỉ / khách sạn của bạn để xem số km…" autocomplete="off"/>
+      <button class="btn btn-primary" id="calcBtn">Tính khoảng cách</button>
+      <button class="btn btn-ghost" id="geoBtn" title="Dùng vị trí hiện tại">🎯 Vị trí của tôi</button>
+    </div>
+    <div class="status" id="status">Nhập địa chỉ rồi bấm <b>Tính khoảng cách</b> — mỗi địa điểm sẽ hiện số km từ chỗ bạn.</div>
+    <div class="filters">
+      <button class="chip active" data-city="all">Tất cả</button>
+      <button class="chip city-danang" data-city="Đà Nẵng">Đà Nẵng</button>
+      <button class="chip city-hoian" data-city="Hội An">Hội An</button>
+      <span style="width:1px;height:22px;background:var(--line)"></span>
+      <button class="chip active" data-cat="all">Mọi loại</button>
+      <button class="chip" data-cat="cafe">☕ Cà phê</button>
+      <button class="chip" data-cat="food">🍜 Ăn vặt/Món</button>
+      <button class="chip" data-cat="restaurant">🍽️ Nhà hàng</button>
+      <button class="chip" data-cat="dessert">🍨 Tráng miệng</button>
+      <button class="chip" data-cat="mall">🛍️ Mua sắm</button>
+      <label class="mustonly"><input type="checkbox" id="mustOnly"/> ⭐ Chỉ “Phải đi”</label>
+      <select class="sortsel" id="sortSel">
+        <option value="default">Sắp xếp: Mặc định</option>
+        <option value="dist">Gần nhất</option>
+        <option value="rate">Đánh giá cao</option>
+        <option value="must">Phải đi trước</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<footer>
+  Made with 🧡 · Dữ liệu đánh giá &amp; ảnh của bạn được lưu ngay trên trình duyệt này ·
+  <a href="#" id="resetBtn">Đặt lại đánh giá</a>
+</footer>
+
+<script>
+/* ============ DATA ============ */
+const CATS = {
+  cafe:       {em:'☕', label:'Cà phê', grad:'linear-gradient(135deg,#6f4e37,#a9744f)', flickr:'coffee,cafe'},
+  food:       {em:'🍜', label:'Món ăn', grad:'linear-gradient(135deg,#d1495b,#f08a5d)', flickr:'vietnamese-food,noodle'},
+  restaurant: {em:'🍽️', label:'Nhà hàng', grad:'linear-gradient(135deg,#3d5a80,#5c8a9e)', flickr:'restaurant,asian-food'},
+  dessert:    {em:'🍨', label:'Tráng miệng', grad:'linear-gradient(135deg,#c86fc9,#f0a6ca)', flickr:'icecream,dessert'},
+  view:       {em:'📸', label:'Check-in', grad:'linear-gradient(135deg,#457b9d,#8ecae6)', flickr:'danang,river-view'},
+  mall:       {em:'🛍️', label:'Mua sắm', grad:'linear-gradient(135deg,#7b6cf6,#b8b0f2)', flickr:'shopping-mall'}
+};
+
+const PLACES = [
+  // ---------- HỘI AN ----------
+  {id:'sip-cafe', city:'Hội An', name:'Sip Cà Phê', cat:'cafe', coords:[15.8796,108.3272],
+   notes:'Quán cà phê xinh xắn, không gian dễ chịu ở Hội An.',
+   fb:'https://www.facebook.com/share/1UGyJVcU1C/'},
+  {id:'the-canh-dong', city:'Hội An', name:'The Cánh Đồng', cat:'cafe', coords:[15.8858,108.3455], tags:['View đồng lúa'],
+   notes:'Cà phê giữa cánh đồng lúa – view xanh mát, sống ảo cực chill.'},
+  {id:'magicha', city:'Hội An', name:'Magicha.stand', cat:'cafe', coords:[15.8801,108.3268], tags:['Matcha'],
+   notes:'Stand đồ uống matcha – must try cho hội mê trà xanh.'},
+
+  // ---------- ĐÀ NẴNG ----------
+  {id:'starbucks-love', city:'Đà Nẵng', name:'Starbucks Cầu Tình Yêu', cat:'view', coords:[16.0742,108.2272],
+   tags:['View sông','Nên đi lúc trời còn sáng'],
+   notes:'Ngồi ngắm Cầu Tình Yêu &amp; sông Hàn. Mẹo: đi lúc trời còn sáng để có view đẹp nhất.',
+   maps:'https://maps.app.goo.gl/DeZZGvdB6Xxucnd27'},
+  {id:'katinat-filmore', city:'Đà Nẵng', name:'Katinat The Filmore', cat:'view', coords:[16.0665,108.2295],
+   tags:['View sông Hàn'],
+   notes:'Katinat ở The Filmore – view sông Hàn siêu thoáng.',
+   maps:'https://maps.app.goo.gl/mCBMUVqRZGTbRtWF6'},
+  {id:'banhmi-phudat', city:'Đà Nẵng', name:'Bánh mì heo quay Ông Phú Đạt', cat:'food', coords:[16.0666,108.2170],
+   notes:'Bánh mì heo quay trứ danh, da giòn thịt mềm.'},
+  {id:'buncabepmai', city:'Đà Nẵng', name:'Bún cá Bếp Mai by A.Tình', cat:'food', coords:[16.0555,108.2445],
+   tags:['Chỉ bán buổi sáng'],
+   notes:'Ăn sáng ở Nguyễn Văn Thoại.', dishes:'Bún chả cá · bún cá tươi · bún cá ngừ'},
+  {id:'bunbo-baroi', city:'Đà Nẵng', name:'Bún Bò Bà Rơi', cat:'food', coords:[16.0555,108.2200],
+   notes:'Bún bò đậm đà quen thuộc của dân Đà Nẵng.'},
+  {id:'bunbo-legia', city:'Đà Nẵng', name:'Bún Bò Lê Gia', cat:'food', coords:[16.0600,108.2150],
+   notes:'Một địa chỉ bún bò được lòng dân địa phương.'},
+  {id:'donald-trung', city:'Đà Nẵng', name:'Donald Trung', cat:'food', coords:[16.0700,108.2200],
+   notes:'Quán ăn nhiều món đặc trưng.', dishes:'Bánh tráng heo quay · bún mắm'},
+  {id:'bep-cua-ngoai', city:'Đà Nẵng', name:'Bếp Của Ngoại', cat:'restaurant', coords:[16.0500,108.2400],
+   notes:'Cơm nhà kiểu Việt, bếp mẹ nấu – ngon &amp; ấm cúng. Tương tự: Cơm nhà Trâm, Cơm nhà Linh.'},
+  {id:'co-hong', city:'Đà Nẵng', name:'Quán Cô Hồng', cat:'food', coords:[16.0600,108.2300],
+   notes:'Đủ món cuốn &amp; đặc sản miền Trung.',
+   dishes:'Cá nục cuốn bánh tráng · mì Quảng · bún mắm · bánh tráng cuốn thịt heo · bánh canh'},
+  {id:'mon-trung', city:'Đà Nẵng', name:'Món Trung (Hoa)', cat:'restaurant', coords:[16.0550,108.2350],
+   notes:'Ẩm thực Trung Hoa.', dishes:'Mì Kung Fu · Lẩu Mudan · Lẩu Manwah · nhà hàng Phì Lũ'},
+  {id:'kembo-bacmyan', city:'Đà Nẵng', name:'Kem bơ chợ Bắc Mỹ An', cat:'dessert', coords:[16.0450,108.2470],
+   notes:'Kem bơ béo ngậy – món tráng miệng phải thử.'},
+  {id:'pho-bachai', city:'Đà Nẵng', name:'Phở Bắc Hải', cat:'food', coords:[16.0620,108.2200],
+   notes:'Mẹo: nên gọi phở Gàu.'},
+  {id:'pho-dinh', city:'Đà Nẵng', name:'Phố Đình', cat:'restaurant', coords:[16.0580,108.2400], tags:['Đồ Hàn'],
+   notes:'Ẩm thực Hàn Quốc.'},
+  {id:'bolang-toomsara', city:'Đà Nẵng', name:'Bò Làng Toomsara', cat:'restaurant', coords:[16.0400,108.2450],
+   notes:'Không gian nhà làng, món bò đặc sắc.'},
+  {id:'the-farmer', city:'Đà Nẵng', name:'The Farmer', cat:'restaurant', coords:[16.0470,108.2440],
+   notes:'Không gian xanh, đồ ăn &amp; thức uống chỉn chu.'},
+  {id:'phela-novotel', city:'Đà Nẵng', name:'Phê La – Novotel', cat:'cafe', coords:[16.0715,108.2245],
+   tags:['Trà Ô Long'], notes:'Phê La chi nhánh Novotel – trà ô long đặc sản.'},
+  {id:'aeon-mall', city:'Đà Nẵng', name:'AEON Mall Đà Nẵng', cat:'mall', coords:[16.0490,108.2350],
+   notes:'Trung tâm thương mại: mua sắm, ăn uống, giải trí.'},
+  {id:'madam-lan', city:'Đà Nẵng', name:'Nhà hàng Món Việt – Madam Lân', cat:'restaurant', coords:[16.0805,108.2240],
+   notes:'Nhà hàng món Việt nổi tiếng, không gian đẹp bên sông.'},
+  {id:'thai-market', city:'Đà Nẵng', name:'Thai Market', cat:'restaurant', coords:[16.0560,108.2420], tags:['Đồ Thái'],
+   notes:'Ẩm thực Thái Lan.'},
+  {id:'pizza4ps', city:'Đà Nẵng', name:"Pizza 4P's Hoàng Văn Thụ", cat:'restaurant', coords:[16.0605,108.2165],
+   tags:['Cần đặt bàn trước'], notes:'Pizza 4P’s – nên đặt bàn trước khá lâu vì rất đông.'}
+];
+
+/* ============ STATE / STORAGE ============ */
+const LS_KEY='emma-danang-v1';
+let store = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); // store[id]={rating,must,photos:[]}
+let userCoords = JSON.parse(localStorage.getItem('emma-usercoords') || 'null');
+let userAddrText = localStorage.getItem('emma-addr') || '';
+let filterCity='all', filterCat='all', mustOnly=false, sortMode='default';
+const carState={}; // id -> current slide index
+
+function saveStore(){ localStorage.setItem(LS_KEY, JSON.stringify(store)); }
+function rec(id){ return store[id] || (store[id]={rating:0,must:false,photos:[]}); }
+
+/* ============ DISTANCE ============ */
+function haversine(a,b){
+  const R=6371,toR=x=>x*Math.PI/180;
+  const dLat=toR(b[0]-a[0]), dLon=toR(b[1]-a[1]);
+  const s=Math.sin(dLat/2)**2 + Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s));
+}
+function fmtKm(km){ return km<1 ? Math.round(km*1000)+' m' : (km<10? km.toFixed(1):Math.round(km))+' km'; }
+
+async function geocode(q){
+  const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q);
+  const r=await fetch(url,{headers:{'Accept':'application/json'}});
+  const d=await r.json();
+  if(!d.length) return null;
+  return [parseFloat(d[0].lat), parseFloat(d[0].lon)];
+}
+
+async function calcFromAddress(){
+  const q=document.getElementById('addrInput').value.trim();
+  if(!q){ setStatus('⚠️ Bạn hãy nhập địa chỉ trước nhé.'); return; }
+  setStatus('⏳ Đang tìm toạ độ địa chỉ…');
+  try{
+    let coords=await geocode(q);
+    if(!coords) coords=await geocode(q+', Việt Nam');
+    if(!coords){ setStatus('❌ Không tìm thấy địa chỉ. Thử ghi rõ hơn (kèm quận/thành phố).'); return; }
+    userCoords=coords; userAddrText=q;
+    localStorage.setItem('emma-usercoords',JSON.stringify(coords));
+    localStorage.setItem('emma-addr',q);
+    setStatus('✅ Đang tính từ: <b>'+esc(q)+'</b> — số km là đường chim bay (~).');
+    render();
+  }catch(e){ setStatus('❌ Lỗi kết nối khi tìm địa chỉ. Kiểm tra mạng rồi thử lại.'); }
+}
+
+function useMyLocation(){
+  if(!navigator.geolocation){ setStatus('Trình duyệt không hỗ trợ định vị.'); return; }
+  setStatus('⏳ Đang lấy vị trí của bạn…');
+  navigator.geolocation.getCurrentPosition(p=>{
+    userCoords=[p.coords.latitude,p.coords.longitude]; userAddrText='Vị trí hiện tại';
+    localStorage.setItem('emma-usercoords',JSON.stringify(userCoords));
+    localStorage.setItem('emma-addr','');
+    document.getElementById('addrInput').value='';
+    setStatus('✅ Đang tính từ <b>vị trí hiện tại</b> của bạn — số km là đường chim bay (~).');
+    render();
+  }, ()=> setStatus('❌ Không lấy được vị trí (bạn cần cho phép quyền định vị).'));
+}
+function setStatus(html){ document.getElementById('status').innerHTML=html; }
+
+/* ============ CAROUSEL PHOTOS ============ */
+function photosFor(p){
+  const cat=CATS[p.cat]||CATS.food;
+  const user=(store[p.id]&&store[p.id].photos)||[];
+  // ảnh minh hoạ theo loại quán (Flickr) — sẽ tự ẩn nếu lỗi tải
+  const lock = Math.abs([...p.id].reduce((a,c)=>a+c.charCodeAt(0),0));
+  const stock=[0,1,2].map(i=>`https://loremflickr.com/640/400/${encodeURIComponent(cat.flickr)}?lock=${lock+i}`);
+  return {user, stock};
+}
+
+/* ============ RENDER ============ */
+const main=document.getElementById('main');
+
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function cardHTML(p){
+  const cat=CATS[p.cat]||CATS.food;
+  const r=store[p.id]||{rating:0,must:false,photos:[]};
+  const {user,stock}=photosFor(p);
+  const cityColor = p.city==='Hội An'?'var(--hoian)':'var(--danang)';
+  let dist='';
+  if(userCoords && p.coords){ dist=`<div class="badge-km">📍 ~${fmtKm(haversine(userCoords,p.coords))}</div>`; }
+
+  // build slides: cover + user photos + stock photos
+  let slides=`<div class="slide cover" style="background:${cat.grad}">
+       <div class="em">${cat.em}</div><div class="nm">${esc(p.name)}</div></div>`;
+  user.forEach(u=>{ slides+=`<div class="slide"><img src="${esc(u)}" onerror="this.closest('.slide').remove()"/></div>`; });
+  stock.forEach(s=>{ slides+=`<div class="slide"><img loading="lazy" src="${s}" onerror="this.closest('.slide').remove()"/><span class="illus">ảnh minh hoạ</span></div>`; });
+
+  const gq=encodeURIComponent(p.name+' '+p.city);
+  const stars=[1,2,3,4,5].map(n=>`<span data-star="${n}" class="${n<=r.rating?'on':''}">★</span>`).join('');
+
+  const tagHTML=(p.tags||[]).map(t=>{
+    const warn=/sáng|đặt bàn|còn sáng/i.test(t);
+    return `<span class="tag ${warn?'warn':''}">${warn?'⏰ ':''}${esc(t)}</span>`;
+  }).join('');
+
+  return `<div class="card ${r.must?'must':''}" data-id="${p.id}" data-city="${p.city}" data-cat="${p.cat}">
+    <div class="carousel" data-id="${p.id}">
+      <div class="track">${slides}</div>
+      <button class="nav prev">‹</button><button class="nav next">›</button>
+      ${dist}${r.must?'<div class="badge-must">⭐ PHẢI ĐI</div>':''}
+      <span class="city-tag" style="background:${cityColor}">${p.city}</span>
+      <div class="dots"></div>
+    </div>
+    <div class="cbody">
+      <div class="ctitle"><span class="em">${cat.em}</span><h3>${esc(p.name)}</h3></div>
+      <div class="tags"><span class="tag cat">${cat.label}</span>${tagHTML}</div>
+      <p class="notes">${p.notes||''}${p.dishes?`<br><span class="dish">🍴 ${esc(p.dishes)}</span>`:''}</p>
+      <div class="actions">
+        <div class="rate-row">
+          <div class="stars" data-id="${p.id}" title="Chấm điểm (vote)">${stars}</div>
+          <button class="must-btn ${r.must?'on':''}" data-must="${p.id}">${r.must?'⭐ Phải đi':'☆ Đánh dấu Phải đi'}</button>
+        </div>
+        <div class="link-row">
+          <button class="lnk" data-map="${gq}">🗺️ Xem bản đồ</button>
+          <button class="lnk" onclick="window.open('https://www.google.com/search?tbm=isch&q=${gq}','_blank')">🔍 Ảnh Google</button>
+          ${p.fb?`<button class="lnk" onclick="window.open('${p.fb}','_blank')">📘 Facebook</button>`:''}
+          <button class="lnk" data-addphoto="${p.id}">➕ Thêm ảnh</button>
+        </div>
+        <div class="mapwrap"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function filtered(){
+  let arr=PLACES.filter(p=>
+    (filterCity==='all'||p.city===filterCity) &&
+    (filterCat==='all'||p.cat===filterCat) &&
+    (!mustOnly || (store[p.id]&&store[p.id].must))
+  );
+  if(sortMode==='dist' && userCoords){
+    arr=[...arr].sort((a,b)=>haversine(userCoords,a.coords)-haversine(userCoords,b.coords));
+  } else if(sortMode==='rate'){
+    arr=[...arr].sort((a,b)=>((store[b.id]||{}).rating||0)-((store[a.id]||{}).rating||0));
+  } else if(sortMode==='must'){
+    arr=[...arr].sort((a,b)=>((store[b.id]||{}).must?1:0)-((store[a.id]||{}).must?1:0));
+  }
+  return arr;
+}
+
+function render(){
+  const arr=filtered();
+  // stats chip
+  const mustN=PLACES.filter(p=>(store[p.id]||{}).must).length;
+  document.getElementById('statChip').innerHTML=`📌 ${PLACES.length} địa điểm · ⭐ ${mustN} Phải đi`;
+
+  if(!arr.length){ main.innerHTML='<div class="empty">🔍 Không có địa điểm nào khớp bộ lọc.</div>'; return; }
+
+  let html='';
+  if(sortMode==='default'){
+    ['Đà Nẵng','Hội An'].forEach(city=>{
+      const cityArr=arr.filter(p=>p.city===city);
+      if(!cityArr.length) return;
+      const c=city==='Hội An'?'var(--hoian)':'var(--danang)';
+      html+=`<div class="city-head"><h2 style="color:${c}">${city==='Hội An'?'🏮':'🌉'} ${city}</h2>
+             <span class="count">${cityArr.length} địa điểm</span><span class="bar"></span></div>
+             <div class="grid">${cityArr.map(cardHTML).join('')}</div>`;
+    });
+  } else {
+    html=`<div class="grid" style="margin-top:8px">${arr.map(cardHTML).join('')}</div>`;
+  }
+  main.innerHTML=html;
+  arr.forEach(p=>initCarousel(p.id));
+}
+
+/* ============ CAROUSEL LOGIC ============ */
+function initCarousel(id){
+  const car=main.querySelector(`.carousel[data-id="${id}"]`);
+  if(!car) return;
+  const track=car.querySelector('.track');
+  const dots=car.querySelector('.dots');
+  const count=()=>track.children.length;
+  let idx=carState[id]||0;
+  function build(){
+    const n=count(); if(idx>=n) idx=0;
+    track.style.transform=`translateX(-${idx*100}%)`;
+    dots.innerHTML=Array.from({length:n},(_,i)=>`<i class="${i===idx?'on':''}"></i>`).join('');
+    car.querySelectorAll('.nav').forEach(b=>b.style.display=n>1?'flex':'none');
+    dots.style.display=n>1?'flex':'none';
+    carState[id]=idx;
+  }
+  car.querySelector('.prev').onclick=e=>{e.stopPropagation();idx=(idx-1+count())%count();build();};
+  car.querySelector('.next').onclick=e=>{e.stopPropagation();idx=(idx+1)%count();build();};
+  // swipe
+  let sx=null;
+  car.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  car.addEventListener('touchend',e=>{
+    if(sx===null)return; const dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>40){ idx=(idx+(dx<0?1:-1)+count())%count(); build(); } sx=null;
+  });
+  build();
+}
+
+/* ============ EVENTS ============ */
+main.addEventListener('click',e=>{
+  const star=e.target.closest('.stars span');
+  if(star){ const id=star.closest('.stars').dataset.id; const v=+star.dataset.star;
+    const rr=rec(id); rr.rating = (rr.rating===v?0:v); saveStore(); render(); return; }
+  const mb=e.target.closest('[data-must]');
+  if(mb){ const id=mb.dataset.must; const rr=rec(id); rr.must=!rr.must; saveStore(); render(); return; }
+  const mp=e.target.closest('[data-map]');
+  if(mp){ const gq=mp.dataset.map;
+    const wrap=mp.closest('.cbody').querySelector('.mapwrap');
+    const open=wrap.classList.toggle('open'); mp.classList.toggle('on',open);
+    mp.innerHTML = open ? '✖️ Đóng bản đồ' : '🗺️ Xem bản đồ';
+    if(open && !wrap.dataset.loaded){
+      wrap.dataset.loaded='1';
+      wrap.innerHTML=`<iframe loading="lazy" src="https://maps.google.com/maps?q=${gq}&z=16&output=embed"></iframe>`+
+        `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${gq}" target="_blank">↗️ Mở trong Google Maps</a>`;
+    }
+    return; }
+  const ap=e.target.closest('[data-addphoto]');
+  if(ap){ const id=ap.dataset.addphoto;
+    const url=prompt('Dán link ảnh (URL) của địa điểm này:');
+    if(url && /^https?:\/\//.test(url.trim())){ rec(id).photos.push(url.trim()); saveStore(); render(); }
+    else if(url){ alert('Link ảnh cần bắt đầu bằng http:// hoặc https://'); }
+    return; }
+});
+
+document.querySelectorAll('.chip[data-city]').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('.chip[data-city]').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active'); filterCity=c.dataset.city; render();
+});
+document.querySelectorAll('.chip[data-cat]').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('.chip[data-cat]').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active'); filterCat=c.dataset.cat; render();
+});
+document.getElementById('mustOnly').onchange=e=>{mustOnly=e.target.checked;render();};
+document.getElementById('sortSel').onchange=e=>{sortMode=e.target.value;render();};
+document.getElementById('calcBtn').onclick=calcFromAddress;
+document.getElementById('geoBtn').onclick=useMyLocation;
+document.getElementById('addrInput').addEventListener('keydown',e=>{if(e.key==='Enter')calcFromAddress();});
+document.getElementById('resetBtn').onclick=e=>{e.preventDefault();
+  if(confirm('Xoá toàn bộ đánh giá, Phải đi và ảnh đã lưu?')){ store={}; saveStore(); render(); }};
+
+/* ============ INIT ============ */
+if(userAddrText && userAddrText!=='Vị trí hiện tại') document.getElementById('addrInput').value=userAddrText;
+if(userCoords) setStatus('✅ Đang tính từ: <b>'+esc(userAddrText||'vị trí đã lưu')+'</b> — số km là đường chim bay (~).');
+render();
+</script>
+</body>
+</html>
