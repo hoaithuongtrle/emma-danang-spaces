@@ -187,9 +187,6 @@ const CATS = {
 
 const PLACES = [
   // ---------- HỘI AN ----------
-  {id:'sip-cafe', city:'Hội An', name:'Sip Cà Phê', cat:'cafe', coords:[15.8796,108.3272],
-   notes:'Quán cà phê xinh xắn, không gian dễ chịu ở Hội An.',
-   fb:'https://www.facebook.com/share/1UGyJVcU1C/'},
   {id:'the-canh-dong', city:'Hội An', name:'The Cánh Đồng', cat:'cafe', coords:[15.8858,108.3455], tags:['View đồng lúa'],
    notes:'Cà phê giữa cánh đồng lúa – view xanh mát, sống ảo cực chill.'},
   {id:'magicha', city:'Hội An', name:'Magicha.stand', cat:'cafe', coords:[15.8801,108.3268], tags:['Matcha'],
@@ -264,20 +261,25 @@ function haversine(a,b){
 }
 function fmtKm(km){ return km<1 ? Math.round(km*1000)+' m' : (km<10? km.toFixed(1):Math.round(km))+' km'; }
 
-async function geocode(q){
-  const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q);
+async function geocode(q, extra=''){
+  const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=vn&q='+encodeURIComponent(q)+extra;
   const r=await fetch(url,{headers:{'Accept':'application/json'}});
   const d=await r.json();
   if(!d.length) return null;
   return [parseFloat(d[0].lat), parseFloat(d[0].lon)];
 }
+// khung giới hạn quanh Đà Nẵng + Hội An (minLon,maxLat,maxLon,minLat)
+const DN_BOX='&viewbox=107.95,16.25,108.60,15.70&bounded=1';
 
 async function calcFromAddress(){
   const q=document.getElementById('addrInput').value.trim();
   if(!q){ setStatus('⚠️ Bạn hãy nhập địa chỉ trước nhé.'); return; }
   setStatus('⏳ Đang tìm toạ độ địa chỉ…');
   try{
-    let coords=await geocode(q);
+    // ưu tiên tìm trong vùng Đà Nẵng – Hội An trước để không nhầm sang tỉnh khác
+    let coords=await geocode(q, DN_BOX);
+    if(!coords) coords=await geocode(q+', Đà Nẵng', DN_BOX);
+    if(!coords) coords=await geocode(q+', Đà Nẵng');
     if(!coords) coords=await geocode(q+', Việt Nam');
     if(!coords){ setStatus('❌ Không tìm thấy địa chỉ. Thử ghi rõ hơn (kèm quận/thành phố).'); return; }
     userCoords=coords; userAddrText=q;
@@ -303,13 +305,39 @@ function useMyLocation(){
 function setStatus(html){ document.getElementById('status').innerHTML=html; }
 
 /* ============ CAROUSEL PHOTOS ============ */
+const repoImgCache={};   // id -> [url,...] ảnh thật trong repo (images/<id>-N.jpg)
+const probedIds=new Set();
 function photosFor(p){
   const cat=CATS[p.cat]||CATS.food;
   const user=(store[p.id]&&store[p.id].photos)||[];
-  // ảnh minh hoạ theo loại quán (Flickr) — sẽ tự ẩn nếu lỗi tải
+  const repo=repoImgCache[p.id]||[];
+  // ảnh minh hoạ chỉ dùng khi CHƯA có ảnh thật trong repo
   const lock = Math.abs([...p.id].reduce((a,c)=>a+c.charCodeAt(0),0));
-  const stock=[0,1,2].map(i=>`https://loremflickr.com/640/400/${encodeURIComponent(cat.flickr)}?lock=${lock+i}`);
-  return {user, stock};
+  const stock = repo.length ? [] : [0,1,2].map(i=>`https://loremflickr.com/640/400/${encodeURIComponent(cat.flickr)}?lock=${lock+i}`);
+  return {user, repo, stock};
+}
+// dò ảnh thật trong repo: images/<id>-1.jpg, -2.jpg… (dừng khi gặp file không tồn tại)
+function probeRepoPhotos(id){
+  if(probedIds.has(id)) return; probedIds.add(id); repoImgCache[id]=[];
+  let n=1;
+  const tryNext=()=>{
+    if(n>10) return;
+    const img=new Image();
+    img.onload=()=>{
+      const url=`images/${id}-${n}.jpg`; repoImgCache[id].push(url);
+      const car=main.querySelector(`.carousel[data-id="${id}"]`);
+      if(car){ const track=car.querySelector('.track');
+        if(repoImgCache[id].length===1) track.querySelectorAll('.slide.stock').forEach(s=>s.remove());
+        const slide=document.createElement('div'); slide.className='slide';
+        const im=document.createElement('img'); im.src=url; slide.appendChild(im); track.appendChild(slide);
+        car._build && car._build();
+      }
+      n++; tryNext();
+    };
+    img.onerror=()=>{};
+    img.src=`images/${id}-${n}.jpg`;
+  };
+  tryNext();
 }
 
 /* ============ RENDER ============ */
@@ -320,7 +348,7 @@ function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>
 function cardHTML(p){
   const cat=CATS[p.cat]||CATS.food;
   const r=store[p.id]||{rating:0,must:false,photos:[]};
-  const {user,stock}=photosFor(p);
+  const {user,repo,stock}=photosFor(p);
   const cityColor = p.city==='Hội An'?'var(--hoian)':'var(--danang)';
   let dist='';
   if(userCoords && p.coords){ dist=`<div class="badge-km">📍 ~${fmtKm(haversine(userCoords,p.coords))}</div>`; }
@@ -328,8 +356,9 @@ function cardHTML(p){
   // build slides: cover + user photos + stock photos
   let slides=`<div class="slide cover" style="background:${cat.grad}">
        <div class="em">${cat.em}</div><div class="nm">${esc(p.name)}</div></div>`;
+  repo.forEach(u=>{ slides+=`<div class="slide"><img loading="lazy" src="${esc(u)}"/></div>`; });
   user.forEach(u=>{ slides+=`<div class="slide"><img src="${esc(u)}" onerror="this.closest('.slide').remove()"/></div>`; });
-  stock.forEach(s=>{ slides+=`<div class="slide"><img loading="lazy" src="${s}" onerror="this.closest('.slide').remove()"/><span class="illus">ảnh minh hoạ</span></div>`; });
+  stock.forEach(s=>{ slides+=`<div class="slide stock"><img loading="lazy" src="${s}" onerror="this.closest('.slide').remove()"/><span class="illus">ảnh minh hoạ</span></div>`; });
 
   const gq=encodeURIComponent(p.name+' '+p.city);
   const stars=[1,2,3,4,5].map(n=>`<span data-star="${n}" class="${n<=r.rating?'on':''}">★</span>`).join('');
@@ -406,7 +435,7 @@ function render(){
     html=`<div class="grid" style="margin-top:8px">${arr.map(cardHTML).join('')}</div>`;
   }
   main.innerHTML=html;
-  arr.forEach(p=>initCarousel(p.id));
+  arr.forEach(p=>{ initCarousel(p.id); probeRepoPhotos(p.id); });
 }
 
 /* ============ CAROUSEL LOGIC ============ */
@@ -425,6 +454,7 @@ function initCarousel(id){
     dots.style.display=n>1?'flex':'none';
     carState[id]=idx;
   }
+  car._build=build;
   car.querySelector('.prev').onclick=e=>{e.stopPropagation();idx=(idx-1+count())%count();build();};
   car.querySelector('.next').onclick=e=>{e.stopPropagation();idx=(idx+1)%count();build();};
   // swipe
