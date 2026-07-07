@@ -324,10 +324,11 @@ function probeRepoPhotos(id){
       const url=`${id}-${n}.jpg`; repoImgCache[id].push(url);
       const car=main.querySelector(`.carousel[data-id="${id}"]`);
       if(car){ const track=car.querySelector('.track');
-        if(repoImgCache[id].length===1) track.querySelectorAll('.slide.stock').forEach(s=>s.remove());
+        if(repoImgCache[id].length===1)   // ảnh thật đầu tiên về: bỏ bìa + ảnh minh hoạ
+          track.querySelectorAll('.slide.stock, .slide.cover').forEach(s=>s.remove());
         const slide=document.createElement('div'); slide.className='slide';
         const im=document.createElement('img'); im.src=url; slide.appendChild(im); track.appendChild(slide);
-        car._build && car._build();
+        carState[id]=0; car._build && car._build();
       }
       n++; tryNext();
     };
@@ -350,12 +351,14 @@ function cardHTML(p){
   let dist='';
   if(userCoords && p.coords){ dist=`<div class="badge-km">📍 ~${fmtKm(haversine(userCoords,p.coords))}</div>`; }
 
-  // build slides: cover + user photos + stock photos
-  let slides=`<div class="slide cover" style="background:${cat.grad}">
-       <div class="em">${cat.em}</div><div class="nm">${esc(p.name)}</div></div>`;
+  // Ảnh THẬT (repo + ảnh bạn thêm) hiện ĐẦU TIÊN; bìa/ảnh minh hoạ chỉ dùng khi chưa có ảnh thật
+  let slides='';
   repo.forEach(u=>{ slides+=`<div class="slide"><img loading="lazy" src="${esc(u)}"/></div>`; });
   user.forEach(u=>{ slides+=`<div class="slide"><img src="${esc(u)}" onerror="this.closest('.slide').remove()"/></div>`; });
-  stock.forEach(s=>{ slides+=`<div class="slide stock"><img loading="lazy" src="${s}" onerror="this.closest('.slide').remove()"/><span class="illus">ảnh minh hoạ</span></div>`; });
+  if(!(repo.length||user.length)){
+    slides = `<div class="slide cover" style="background:${cat.grad}"><div class="em">${cat.em}</div><div class="nm">${esc(p.name)}</div></div>` + slides;
+    stock.forEach(s=>{ slides+=`<div class="slide stock"><img loading="lazy" src="${s}" onerror="this.closest('.slide').remove()"/><span class="illus">ảnh minh hoạ</span></div>`; });
+  }
 
   const gq=encodeURIComponent(p.name+' '+p.city);
   const stars=[1,2,3,4,5].map(n=>`<span data-star="${n}" class="${n<=r.rating?'on':''}">★</span>`).join('');
