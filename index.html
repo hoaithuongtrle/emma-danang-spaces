@@ -217,16 +217,10 @@ const PLACES = [
   {id:'co-hong', city:'Đà Nẵng', name:'Quán Cô Hồng', cat:'food', coords:[16.0600,108.2300],
    notes:'Đủ món cuốn &amp; đặc sản miền Trung.',
    dishes:'Cá nục cuốn bánh tráng · mì Quảng · bún mắm · bánh tráng cuốn thịt heo · bánh canh'},
-  {id:'mon-trung', city:'Đà Nẵng', name:'Món Trung (Hoa)', cat:'restaurant', coords:[16.0550,108.2350],
-   notes:'Ẩm thực Trung Hoa.', dishes:'Mì Kung Fu · Lẩu Mudan · Lẩu Manwah · nhà hàng Phì Lũ'},
-  {id:'kembo-bacmyan', city:'Đà Nẵng', name:'Kem bơ chợ Bắc Mỹ An', cat:'dessert', coords:[16.0450,108.2470],
-   notes:'Kem bơ béo ngậy – món tráng miệng phải thử.'},
   {id:'pho-bachai', city:'Đà Nẵng', name:'Phở Bắc Hải', cat:'food', coords:[16.0620,108.2200],
    notes:'Mẹo: nên gọi phở Gàu.'},
   {id:'pho-dinh', city:'Đà Nẵng', name:'Phố Đình', cat:'restaurant', coords:[16.0580,108.2400], tags:['Đồ Hàn'],
    notes:'Ẩm thực Hàn Quốc.'},
-  {id:'bolang-toomsara', city:'Đà Nẵng', name:'Bò Làng Toomsara', cat:'restaurant', coords:[16.0400,108.2450],
-   notes:'Không gian nhà làng, món bò đặc sắc.'},
   {id:'the-farmer', city:'Đà Nẵng', name:'The Farmer', cat:'restaurant', coords:[16.0470,108.2440],
    notes:'Không gian xanh, đồ ăn &amp; thức uống chỉn chu.'},
   {id:'phela-novotel', city:'Đà Nẵng', name:'Phê La – Novotel', cat:'cafe', coords:[16.0715,108.2245],
@@ -324,7 +318,7 @@ function probeRepoPhotos(id){
     if(n>10) return;
     const img=new Image();
     img.onload=()=>{
-      const url=`images/${id}-${n}.jpg`; repoImgCache[id].push(url);
+      const url=`${id}-${n}.jpg`; repoImgCache[id].push(url);
       const car=main.querySelector(`.carousel[data-id="${id}"]`);
       if(car){ const track=car.querySelector('.track');
         if(repoImgCache[id].length===1) track.querySelectorAll('.slide.stock').forEach(s=>s.remove());
@@ -335,7 +329,7 @@ function probeRepoPhotos(id){
       n++; tryNext();
     };
     img.onerror=()=>{};
-    img.src=`images/${id}-${n}.jpg`;
+    img.src=`${id}-${n}.jpg`;
   };
   tryNext();
 }
