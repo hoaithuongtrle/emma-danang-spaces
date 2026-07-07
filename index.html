@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>Da Nang &amp; Hoi An ‚Äî Eat &amp; Explore üå¥</title>
+<title>Da Nang &amp; Hoi An &#8212; Eat &amp; Explore &#127796;</title>
 <style>
   :root{
     --bg:#fbf7f0; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8377;
@@ -135,15 +135,15 @@
 </head>
 <body>
 <header>
-  <h1>üå¥ Da Nang &amp; Hoi An ‚Äî Food &amp; Places</h1>
+  <h1>&#127796; Da Nang &amp; Hoi An &#8212; Food &amp; Places</h1>
   <p>A local's guide to the best places to eat &amp; hang out</p>
-  <span class="subtag" id="statChip">‚òï Loading‚Ä¶</span>
+  <span class="subtag" id="statChip">&#9749; Loading&#8230;</span>
 </header>
 
 <div class="controls">
   <div class="ctrl-wrap">
     <div class="addr-row">
-      <input type="text" id="searchInput" placeholder="üîç Search a place, dish, or tag‚Ä¶" autocomplete="off"/>
+      <input type="text" id="searchInput" placeholder="&#128269; Search a place, dish, or tag&#8230;" autocomplete="off"/>
     </div>
     <div class="filters">
       <button class="chip active" data-city="all">All</button>
@@ -151,10 +151,10 @@
       <button class="chip city-hoian" data-city="Hoi An">Hoi An</button>
       <span style="width:1px;height:22px;background:var(--line)"></span>
       <button class="chip active" data-cat="all">All types</button>
-      <button class="chip" data-cat="food">üçú Food</button>
-      <button class="chip" data-cat="drink">‚òï Drinks</button>
-      <button class="chip" data-cat="other">üìç Other</button>
-      <label class="mustonly"><input type="checkbox" id="mustOnly"/> ‚≠ê Must-go only</label>
+      <button class="chip" data-cat="food">&#127836; Food</button>
+      <button class="chip" data-cat="drink">&#9749; Drinks</button>
+      <button class="chip" data-cat="other">&#128205; Other</button>
+      <label class="mustonly"><input type="checkbox" id="mustOnly"/> &#11088; Must-go only</label>
       <select class="sortsel" id="sortSel">
         <option value="default">Sort: Default</option>
         <option value="rate">Top rated</option>
@@ -167,114 +167,114 @@
 <main id="main"></main>
 
 <footer>
-  Made with üß° ¬∑ Your ratings &amp; photos are saved right in this browser ¬∑
+  Made with &#129505; &#183; Your ratings &amp; photos are saved right in this browser &#183;
   <a href="#" id="resetBtn">Reset my ratings</a>
 </footer>
 
 <script>
 /* ============ DATA ============ */
 const CATS = {
-  food:  {em:'üçú', label:'Food',   grad:'linear-gradient(135deg,#d1495b,#f08a5d)', flickr:'vietnamese-food,noodle'},
-  drink: {em:'‚òï', label:'Drinks', grad:'linear-gradient(135deg,#6f4e37,#a9744f)', flickr:'coffee,drink'},
-  other: {em:'üìç', label:'Other',  grad:'linear-gradient(135deg,#7b6cf6,#b8b0f2)', flickr:'shopping-mall'}
+  food:  {em:'\u{1F35C}', label:'Food',   grad:'linear-gradient(135deg,#d1495b,#f08a5d)', flickr:'vietnamese-food,noodle'},
+  drink: {em:'\u2615', label:'Drinks', grad:'linear-gradient(135deg,#6f4e37,#a9744f)', flickr:'coffee,drink'},
+  other: {em:'\u{1F4CD}', label:'Other',  grad:'linear-gradient(135deg,#7b6cf6,#b8b0f2)', flickr:'shopping-mall'}
 };
 
 const PLACES = [
   // ---------- HOI AN ----------
-  {id:'the-canh-dong', city:'Hoi An', name:'The C√°nh ƒê·ªìng', cat:'food', coords:[15.8858,108.3455], tags:['Rice-field view'],
-   notes:'Dine right in the middle of green rice paddies ‚Äî dreamy sunset & fairy-light views.'},
+  {id:'the-canh-dong', city:'Hoi An', name:'The C\u00e1nh \u0110\u1ed3ng', cat:'food', coords:[15.8858,108.3455], tags:['Rice-field view'],
+   notes:'Dine right in the middle of green rice paddies \u2014 dreamy sunset & fairy-light views.'},
   {id:'magicha', city:'Hoi An', name:'Magicha.stand', cat:'drink', coords:[15.8801,108.3268], tags:['Matcha'],
-   notes:'A cozy matcha stand ‚Äî a must for green-tea lovers.'},
+   notes:'A cozy matcha stand \u2014 a must for green-tea lovers.'},
 
   // ---------- DA NANG ----------
   {id:'starbucks-love', city:'Da Nang', name:'Starbucks Love Bridge', cat:'drink', coords:[16.0742,108.2272],
    tags:['River view','Go before sunset'],
    notes:'Sit by the Love Bridge & Han River. Tip: go while it\'s still light for the best view.',
    maps:'https://maps.app.goo.gl/DeZZGvdB6Xxucnd27'},
-  {id:'katinat-filmore', city:'Da Nang', name:'Katinat ‚Äì The Filmore', cat:'drink', coords:[16.0665,108.2295],
+  {id:'katinat-filmore', city:'Da Nang', name:'Katinat \u2013 The Filmore', cat:'drink', coords:[16.0665,108.2295],
    tags:['Han River view'],
-   notes:'Katinat at The Filmore ‚Äî wide-open Han River views.',
+   notes:'Katinat at The Filmore \u2014 wide-open Han River views.',
    maps:'https://maps.app.goo.gl/mCBMUVqRZGTbRtWF6'},
-  {id:'banhmi-phudat', city:'Da Nang', name:'B√°nh m√¨ heo quay √îng Ph√∫ ƒê·∫°t', cat:'food', coords:[16.0666,108.2170],
-   notes:'Famous roast-pork banh mi ‚Äî crispy skin, tender meat.'},
-  {id:'buncabepmai', city:'Da Nang', name:'B√∫n c√° B·∫øp Mai by A.T√¨nh', cat:'food', coords:[16.0555,108.2445],
+  {id:'banhmi-phudat', city:'Da Nang', name:'B\u00e1nh m\u00ec heo quay \u00d4ng Ph\u00fa \u0110\u1ea1t', cat:'food', coords:[16.0666,108.2170],
+   notes:'Famous roast-pork banh mi \u2014 crispy skin, tender meat.'},
+  {id:'buncabepmai', city:'Da Nang', name:'B\u00fan c\u00e1 B\u1ebfp Mai by A.T\u00ecnh', cat:'food', coords:[16.0555,108.2445],
    tags:['Morning only'],
-   notes:'Breakfast spot on Nguy·ªÖn VƒÉn Tho·∫°i St.', dishes:'Fish-cake noodle soup ¬∑ fresh fish noodle ¬∑ tuna fish noodle'},
-  {id:'bunbo-baroi', city:'Da Nang', name:'B√∫n B√≤ B√† R∆°i', cat:'food', coords:[16.0555,108.2200],
+   notes:'Breakfast spot on Nguy\u1ec5n V\u0103n Tho\u1ea1i St.', dishes:'Fish-cake noodle soup \u00b7 fresh fish noodle \u00b7 tuna fish noodle'},
+  {id:'bunbo-baroi', city:'Da Nang', name:'B\u00fan B\u00f2 B\u00e0 R\u01a1i', cat:'food', coords:[16.0555,108.2200],
    notes:'Rich, classic beef noodle soup loved by locals.'},
-  {id:'bunbo-legia', city:'Da Nang', name:'B√∫n B√≤ L√™ Gia', cat:'food', coords:[16.0600,108.2150],
+  {id:'bunbo-legia', city:'Da Nang', name:'B\u00fan B\u00f2 L\u00ea Gia', cat:'food', coords:[16.0600,108.2150],
    notes:'A local favorite for Hue-style beef noodle soup.'},
   {id:'donald-trung', city:'Da Nang', name:'Donald Trung', cat:'food', coords:[16.0700,108.2200],
-   notes:'Known for its signature dishes.', dishes:'Roast-pork rice-paper rolls ¬∑ fermented-fish noodle (b√∫n m·∫Øm)'},
-  {id:'bep-cua-ngoai', city:'Da Nang', name:'B·∫øp C·ªßa Ngo·∫°i', cat:'food', coords:[16.0500,108.2400],
-   notes:'Homestyle Vietnamese comfort food ‚Äî cozy & delicious. Similar: C∆°m Nh√† Tr√¢m, C∆°m Nh√† Linh.'},
-  {id:'co-hong', city:'Da Nang', name:'Qu√°n C√¥ H·ªìng', cat:'food', coords:[16.0600,108.2300],
+   notes:'Known for its signature dishes.', dishes:'Roast-pork rice-paper rolls \u00b7 fermented-fish noodle (b\u00fan m\u1eafm)'},
+  {id:'bep-cua-ngoai', city:'Da Nang', name:'B\u1ebfp C\u1ee7a Ngo\u1ea1i', cat:'food', coords:[16.0500,108.2400],
+   notes:'Homestyle Vietnamese comfort food \u2014 cozy & delicious. Similar: C\u01a1m Nh\u00e0 Tr\u00e2m, C\u01a1m Nh\u00e0 Linh.'},
+  {id:'co-hong', city:'Da Nang', name:'Qu\u00e1n C\u00f4 H\u1ed3ng', cat:'food', coords:[16.0600,108.2300],
    notes:'All kinds of rolls & Central-Vietnam specialties.',
-   dishes:'Grilled mackerel rolls ¬∑ Qu·∫£ng noodles ¬∑ b√∫n m·∫Øm ¬∑ pork rice-paper rolls ¬∑ b√°nh canh'},
-  {id:'pho-bachai', city:'Da Nang', name:'Ph·ªü B·∫Øc H·∫£i', cat:'food', coords:[16.0620,108.2200],
-   notes:'Tip: order the brisket pho (ph·ªü g√†u).'},
-  {id:'pho-dinh', city:'Da Nang', name:'Ph·ªë ƒê√¨nh', cat:'food', coords:[16.0580,108.2400], tags:['Korean'],
+   dishes:'Grilled mackerel rolls \u00b7 Qu\u1ea3ng noodles \u00b7 b\u00fan m\u1eafm \u00b7 pork rice-paper rolls \u00b7 b\u00e1nh canh'},
+  {id:'pho-bachai', city:'Da Nang', name:'Ph\u1edf B\u1eafc H\u1ea3i', cat:'food', coords:[16.0620,108.2200],
+   notes:'Tip: order the brisket pho (ph\u1edf g\u00e0u).'},
+  {id:'pho-dinh', city:'Da Nang', name:'Ph\u1ed1 \u0110\u00ecnh', cat:'food', coords:[16.0580,108.2400], tags:['Korean'],
    notes:'Korean cuisine.'},
   {id:'the-farmer', city:'Da Nang', name:'The Farmer', cat:'food', coords:[16.0470,108.2440],
    notes:'Green, relaxed space with carefully made food & drinks.'},
-  {id:'phela-novotel', city:'Da Nang', name:'Ph√™ La ‚Äì Novotel', cat:'drink', coords:[16.0715,108.2245],
-   tags:['Oolong tea'], notes:'Ph√™ La at Novotel ‚Äî signature oolong tea.'},
+  {id:'phela-novotel', city:'Da Nang', name:'Ph\u00ea La \u2013 Novotel', cat:'drink', coords:[16.0715,108.2245],
+   tags:['Oolong tea'], notes:'Ph\u00ea La at Novotel \u2014 signature oolong tea.'},
   {id:'aeon-mall', city:'Da Nang', name:'AEON Mall Da Nang', cat:'other', coords:[16.0490,108.2350],
    notes:'Shopping mall: retail, dining & entertainment.'},
-  {id:'madam-lan', city:'Da Nang', name:'Madam L√¢n', cat:'food', coords:[16.0805,108.2240],
+  {id:'madam-lan', city:'Da Nang', name:'Madam L\u00e2n', cat:'food', coords:[16.0805,108.2240],
    notes:'Popular Vietnamese restaurant with a lovely riverside setting.'},
   {id:'thai-market', city:'Da Nang', name:'Thai Market', cat:'food', coords:[16.0560,108.2420], tags:['Thai'],
    notes:'Thai cuisine.'},
-  {id:'pizza4ps', city:'Da Nang', name:"Pizza 4P's Ho√†ng VƒÉn Th·ª•", cat:'food', coords:[16.0605,108.2165],
-   tags:['Reservation needed'], notes:'Pizza 4P\'s ‚Äî book well ahead, it\'s always packed.'},
+  {id:'pizza4ps', city:'Da Nang', name:"Pizza 4P's Ho\u00e0ng V\u0103n Th\u1ee5", cat:'food', coords:[16.0605,108.2165],
+   tags:['Reservation needed'], notes:'Pizza 4P\'s \u2014 book well ahead, it\'s always packed.'},
 
-  // ---------- DA NANG ¬∑ restored from the original list ----------
-  {id:'chan-troi-goc-be', city:'Da Nang', coords:[16.068,108.228], name:'Nh√† h√†ng Ch√¢n Tr·ªùi G√≥c B·ªÉ', cat:'food', tags:['River view','Go before sunset','Seafood'],
-   notes:'Local seafood & home-style dishes with a lovely river view ‚Äî go before sunset.'},
-  {id:'be-anh-seafood', city:'Da Nang', coords:[16.052,108.244], name:'H·∫£i s·∫£n B√© Anh', cat:'food', tags:['Fresh seafood'],
-   notes:'Fresh seafood ‚Äî a touch pricier than the street spots, but worth it.'},
-  {id:'veteran-korean', city:'Da Nang', coords:[16.06,108.24], name:'Nh√† h√†ng H√†n Qu·ªëc Veteran', cat:'food', tags:['Korean','Reservation needed','Evening only'],
-   notes:'Great Korean food, dinner only ‚Äî book a table ahead.'},
+  // ---------- DA NANG \u00b7 restored from the original list ----------
+  {id:'chan-troi-goc-be', city:'Da Nang', coords:[16.068,108.228], name:'Nh\u00e0 h\u00e0ng Ch\u00e2n Tr\u1eddi G\u00f3c B\u1ec3', cat:'food', tags:['River view','Go before sunset','Seafood'],
+   notes:'Local seafood & home-style dishes with a lovely river view \u2014 go before sunset.'},
+  {id:'be-anh-seafood', city:'Da Nang', coords:[16.052,108.244], name:'H\u1ea3i s\u1ea3n B\u00e9 Anh', cat:'food', tags:['Fresh seafood'],
+   notes:'Fresh seafood \u2014 a touch pricier than the street spots, but worth it.'},
+  {id:'veteran-korean', city:'Da Nang', coords:[16.06,108.24], name:'Nh\u00e0 h\u00e0ng H\u00e0n Qu\u1ed1c Veteran', cat:'food', tags:['Korean','Reservation needed','Evening only'],
+   notes:'Great Korean food, dinner only \u2014 book a table ahead.'},
   {id:'east-west-brewing', city:'Da Nang', coords:[16.054,108.247], name:'East West Brewing Co.', cat:'drink', tags:['Craft beer','Sea view'],
    notes:'Western & local food with fresh craft beer, sea view and a modern vibe.'},
-  {id:'banhxeo-baduong', city:'Da Nang', coords:[16.056,108.219], name:'B√°nh x√®o B√† D∆∞·ª°ng', cat:'food', tags:['Local food'],
-   notes:'Classic local spot ‚Äî crispy b√°nh x√®o & nem l·ª•i, true Da Nang flavor.', dishes:'B√°nh x√®o ¬∑ nem l·ª•i'},
-  {id:'buncha-cabahon', city:'Da Nang', coords:[16.062,108.215], name:'B√∫n ch·∫£ c√° B√† H·ªùn', cat:'food', tags:['Morning only'],
+  {id:'banhxeo-baduong', city:'Da Nang', coords:[16.056,108.219], name:'B\u00e1nh x\u00e8o B\u00e0 D\u01b0\u1ee1ng', cat:'food', tags:['Local food'],
+   notes:'Classic local spot \u2014 crispy b\u00e1nh x\u00e8o & nem l\u1ee5i, true Da Nang flavor.', dishes:'B\u00e1nh x\u00e8o \u00b7 nem l\u1ee5i'},
+  {id:'buncha-cabahon', city:'Da Nang', coords:[16.062,108.215], name:'B\u00fan ch\u1ea3 c\u00e1 B\u00e0 H\u1eddn', cat:'food', tags:['Morning only'],
    notes:'A tasty local breakfast spot.'},
-  {id:'marina-yacht', city:'Da Nang', coords:[16.061,108.227], name:'Du Thuy·ªÅn Marina Restaurant', cat:'food', tags:['Han River view','Evening'],
-   notes:'Cafe & dining ‚Äî Sat/Sun around 9pm you can catch the Dragon Bridge fire show over the Han River.'},
-  {id:'banhuot-basuu', city:'Da Nang', coords:[16.05,108.247], name:'B√°nh ∆∞·ªõt B√† S·ª≠u (Tr·∫ßn B·∫°ch ƒê·∫±ng)', cat:'food', tags:['Morning only','Local food'],
-   notes:'Local b√°nh ∆∞·ªõt on Tr·∫ßn B·∫°ch ƒê·∫±ng St.'},
-  {id:'bep-cuon-tbd', city:'Da Nang', coords:[16.049,108.2475], name:'B·∫øp Cu·ªën (Tr·∫ßn B·∫°ch ƒê·∫±ng)', cat:'food', tags:['Rolls'],
-   notes:'All kinds of Vietnamese rolls on Tr·∫ßn B·∫°ch ƒê·∫±ng St.'},
-  {id:'sodam-lotte', city:'Da Nang', coords:[16.036,108.226], name:'The Sodam ‚Äì Lotte Mart', cat:'food', tags:['Korean'],
+  {id:'marina-yacht', city:'Da Nang', coords:[16.061,108.227], name:'Du Thuy\u1ec1n Marina Restaurant', cat:'food', tags:['Han River view','Evening'],
+   notes:'Cafe & dining \u2014 Sat/Sun around 9pm you can catch the Dragon Bridge fire show over the Han River.'},
+  {id:'banhuot-basuu', city:'Da Nang', coords:[16.05,108.247], name:'B\u00e1nh \u01b0\u1edbt B\u00e0 S\u1eedu (Tr\u1ea7n B\u1ea1ch \u0110\u1eb1ng)', cat:'food', tags:['Morning only','Local food'],
+   notes:'Local b\u00e1nh \u01b0\u1edbt on Tr\u1ea7n B\u1ea1ch \u0110\u1eb1ng St.'},
+  {id:'bep-cuon-tbd', city:'Da Nang', coords:[16.049,108.2475], name:'B\u1ebfp Cu\u1ed1n (Tr\u1ea7n B\u1ea1ch \u0110\u1eb1ng)', cat:'food', tags:['Rolls'],
+   notes:'All kinds of Vietnamese rolls on Tr\u1ea7n B\u1ea1ch \u0110\u1eb1ng St.'},
+  {id:'sodam-lotte', city:'Da Nang', coords:[16.036,108.226], name:'The Sodam \u2013 Lotte Mart', cat:'food', tags:['Korean'],
    notes:'Korean restaurant inside Lotte Mart Da Nang.'},
   {id:'salmon-club', city:'Da Nang', coords:[16.056,108.244], name:'Salmon Club', cat:'food', tags:['Salmon','Japanese','Seafood'],
    notes:'Specializes in every kind of salmon dish.'},
-  {id:'phat-myhanh-seafood', city:'Da Nang', coords:[16.053,108.245], name:'H·∫£i S·∫£n Ph√°t M·ªπ H·∫°nh', cat:'food', tags:['Seafood'],
-   notes:'Casual seafood ‚Äî fresh and affordable.'},
-  {id:'cho-ca-go', city:'Da Nang', coords:[16.09,108.26], name:'Ch·ª£ C√° G·ªó', cat:'food', tags:['Sea view','Experience'],
-   notes:'Slurp squid instant-noodles while watching the sea ‚Äî a fun local experience.', dishes:'M√¨ t√¥m m·ª±c'},
+  {id:'phat-myhanh-seafood', city:'Da Nang', coords:[16.053,108.245], name:'H\u1ea3i S\u1ea3n Ph\u00e1t M\u1ef9 H\u1ea1nh', cat:'food', tags:['Seafood'],
+   notes:'Casual seafood \u2014 fresh and affordable.'},
+  {id:'cho-ca-go', city:'Da Nang', coords:[16.09,108.26], name:'Ch\u1ee3 C\u00e1 G\u1ed7', cat:'food', tags:['Sea view','Experience'],
+   notes:'Slurp squid instant-noodles while watching the sea \u2014 a fun local experience.', dishes:'M\u00ec t\u00f4m m\u1ef1c'},
   {id:'bb-bakery', city:'Da Nang', coords:[16.058,108.242], name:'B&B Bakery', cat:'drink', tags:['Pastries','Outdoor','Chill'],
-   notes:'Pastries, coffee & juice ‚Äî lots of cakes by day, super-chill outdoor seating at night.'},
+   notes:'Pastries, coffee & juice \u2014 lots of cakes by day, super-chill outdoor seating at night.'},
   {id:'dreamer-cafe', city:'Da Nang', coords:[16.055,108.238], name:'Dreamer', cat:'drink', tags:['Garden','Evening'],
-   notes:'Leafy garden cafe ‚Äî lovely in the evening, and there are AC rooms too.'},
-  {id:'sontra-marina', city:'Da Nang', coords:[16.105,108.27], name:'S∆°n Tr√† Marina', cat:'drink', tags:['Son Tra view'],
-   notes:'Coffee & light bites facing the S∆°n Tr√† peninsula.'},
+   notes:'Leafy garden cafe \u2014 lovely in the evening, and there are AC rooms too.'},
+  {id:'sontra-marina', city:'Da Nang', coords:[16.105,108.27], name:'S\u01a1n Tr\u00e0 Marina', cat:'drink', tags:['Son Tra view'],
+   notes:'Coffee & light bites facing the S\u01a1n Tr\u00e0 peninsula.'},
   {id:'normad-cafe', city:'Da Nang', coords:[16.06,108.235], name:'Normad', cat:'drink', tags:['Photo spot','Cute decor'],
    notes:'A small cafe with pretty corners for photos.'},
   {id:'reply-1988', city:'Da Nang', coords:[16.059,108.236], name:'Reply 1988', cat:'drink', tags:['Retro','Photo spot'],
    notes:'Korean retro cafe inspired by the show Reply 1988.'},
   {id:'katinat-oceanview', city:'Da Nang', coords:[16.05,108.248], name:'Katinat Ocean View', cat:'drink', tags:['Sea view'],
-   notes:'The Katinat branch with an ocean view ‚Äî much nicer than the usual ones.'},
-  {id:'homnay-eatery', city:'Da Nang', coords:[16.056,108.239], name:'H√¥m Nay Eatery Cafe', cat:'drink', tags:['Eatery','Chill'],
+   notes:'The Katinat branch with an ocean view \u2014 much nicer than the usual ones.'},
+  {id:'homnay-eatery', city:'Da Nang', coords:[16.056,108.239], name:'H\u00f4m Nay Eatery Cafe', cat:'drink', tags:['Eatery','Chill'],
    notes:'Coffee plus light meals in a chill space.'},
-  {id:'ca-chuon-space', city:'Da Nang', coords:[16.07,108.24], name:'C√° Chu·ªìn Space', cat:'drink', tags:['Concept','Photo spot'],
+  {id:'ca-chuon-space', city:'Da Nang', coords:[16.07,108.24], name:'C\u00e1 Chu\u1ed3n Space', cat:'drink', tags:['Concept','Photo spot'],
    notes:'A cafe themed on the flying fish, a Da Nang sea icon.'},
 
   // ---------- new place from your photos ----------
-  {id:'banhtrang-heoquay', city:'Da Nang', coords:[16.062,108.218], name:'B√°nh tr√°ng heo quay', cat:'food', tags:['Local food'],
-   notes:'Rice-paper rolls with crispy roast pork ‚Äî a favorite Da Nang street snack.', dishes:'B√°nh tr√°ng cu·ªën heo quay'}
+  {id:'banhtrang-heoquay', city:'Da Nang', coords:[16.062,108.218], name:'B\u00e1nh tr\u00e1ng heo quay', cat:'food', tags:['Local food'],
+   notes:'Rice-paper rolls with crispy roast pork \u2014 a favorite Da Nang street snack.', dishes:'B\u00e1nh tr\u00e1ng cu\u1ed1n heo quay'}
 ];
 
 /* ============ STATE / STORAGE ============ */
@@ -289,8 +289,8 @@ function rec(id){ return store[id] || (store[id]={rating:0,must:false,photos:[]}
 /* ============ SEARCH ============ */
 function norm(s){
   return (s||'').toString().toLowerCase()
-    .normalize('NFD').replace(/[ÃÄ-ÕØ]/g,'')  // strip diacritics so "ph·ªü" matches "pho"
-    .replace(/ƒë/g,'d');
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // strip diacritics so "ph\u1edf" matches "pho"
+    .replace(/\u0111/g,'d');
 }
 function matchesSearch(p, q){
   if(!q) return true;
@@ -310,7 +310,7 @@ function photosFor(p){
   const stock = repo.length ? [] : [0,1,2].map(i=>`https://loremflickr.com/640/400/${encodeURIComponent(cat.flickr)}?lock=${lock+i}`);
   return {user, repo, stock};
 }
-// probe for real photos in repo: <id>-1.jpg, -2.jpg‚Ä¶ (stop at first missing file)
+// probe for real photos in repo: <id>-1.jpg, -2.jpg\u2026 (stop at first missing file)
 function probeRepoPhotos(id){
   if(probedIds.has(id)) return; probedIds.add(id); repoImgCache[id]=[];
   let n=1;
@@ -356,35 +356,35 @@ function cardHTML(p){
   }
 
   const gq=encodeURIComponent(p.name+' '+p.city);
-  const stars=[1,2,3,4,5].map(n=>`<span data-star="${n}" class="${n<=r.rating?'on':''}">‚òÖ</span>`).join('');
+  const stars=[1,2,3,4,5].map(n=>`<span data-star="${n}" class="${n<=r.rating?'on':''}">\u2605</span>`).join('');
 
   const tagHTML=(p.tags||[]).map(t=>{
     const warn=/morning|reservation|sunset|before/i.test(t);
-    return `<span class="tag ${warn?'warn':''}">${warn?'‚è∞ ':''}${esc(t)}</span>`;
+    return `<span class="tag ${warn?'warn':''}">${warn?'\u23f0 ':''}${esc(t)}</span>`;
   }).join('');
 
   return `<div class="card ${r.must?'must':''}" data-id="${p.id}" data-city="${p.city}" data-cat="${p.cat}">
     <div class="carousel" data-id="${p.id}">
       <div class="track">${slides}</div>
-      <button class="nav prev">‚Äπ</button><button class="nav next">‚Ä∫</button>
-      ${r.must?'<div class="badge-must">‚≠ê MUST GO</div>':''}
+      <button class="nav prev">\u2039</button><button class="nav next">\u203a</button>
+      ${r.must?'<div class="badge-must">\u2b50 MUST GO</div>':''}
       <span class="city-tag" style="background:${cityColor}">${p.city}</span>
       <div class="dots"></div>
     </div>
     <div class="cbody">
       <div class="ctitle"><span class="em">${cat.em}</span><h3>${esc(p.name)}</h3></div>
       <div class="tags"><span class="tag cat">${cat.label}</span>${tagHTML}</div>
-      <p class="notes">${p.notes||''}${p.dishes?`<br><span class="dish">üç¥ ${esc(p.dishes)}</span>`:''}</p>
+      <p class="notes">${p.notes||''}${p.dishes?`<br><span class="dish">\u{1F374} ${esc(p.dishes)}</span>`:''}</p>
       <div class="actions">
         <div class="rate-row">
           <div class="stars" data-id="${p.id}" title="Rate (vote)">${stars}</div>
-          <button class="must-btn ${r.must?'on':''}" data-must="${p.id}">${r.must?'‚≠ê Must go':'‚òÜ Mark must-go'}</button>
+          <button class="must-btn ${r.must?'on':''}" data-must="${p.id}">${r.must?'\u2b50 Must go':'\u2606 Mark must-go'}</button>
         </div>
         <div class="link-row">
-          <button class="lnk" data-map="${gq}">üó∫Ô∏è Map</button>
-          <button class="lnk" onclick="window.open('https://www.google.com/search?tbm=isch&q=${gq}','_blank')">üîç Photos</button>
-          ${p.fb?`<button class="lnk" onclick="window.open('${p.fb}','_blank')">üìò Facebook</button>`:''}
-          <button class="lnk" data-addphoto="${p.id}">‚ûï Add photo</button>
+          <button class="lnk" data-map="${gq}">\u{1F5FA}\ufe0f Map</button>
+          <button class="lnk" onclick="window.open('https://www.google.com/search?tbm=isch&q=${gq}','_blank')">\u{1F50D} Photos</button>
+          ${p.fb?`<button class="lnk" onclick="window.open('${p.fb}','_blank')">\u{1F4D8} Facebook</button>`:''}
+          <button class="lnk" data-addphoto="${p.id}">\u2795 Add photo</button>
         </div>
         <div class="mapwrap"></div>
       </div>
@@ -411,9 +411,9 @@ function filtered(){
 function render(){
   const arr=filtered();
   const mustN=PLACES.filter(p=>(store[p.id]||{}).must).length;
-  document.getElementById('statChip').innerHTML=`üìå ${PLACES.length} places ¬∑ ‚≠ê ${mustN} must-go`;
+  document.getElementById('statChip').innerHTML=`\u{1F4CC} ${PLACES.length} places \u00b7 \u2b50 ${mustN} must-go`;
 
-  if(!arr.length){ main.innerHTML='<div class="empty">üîç No places match your filters.</div>'; return; }
+  if(!arr.length){ main.innerHTML='<div class="empty">\u{1F50D} No places match your filters.</div>'; return; }
 
   let html='';
   if(sortMode==='default'){
@@ -421,7 +421,7 @@ function render(){
       const cityArr=arr.filter(p=>p.city===city);
       if(!cityArr.length) return;
       const c=city==='Hoi An'?'var(--hoian)':'var(--danang)';
-      html+=`<div class="city-head"><h2 style="color:${c}">${city==='Hoi An'?'üèÆ':'üåâ'} ${city}</h2>
+      html+=`<div class="city-head"><h2 style="color:${c}">${city==='Hoi An'?'\u{1F3EE}':'\u{1F309}'} ${city}</h2>
              <span class="count">${cityArr.length} places</span><span class="bar"></span></div>
              <div class="grid">${cityArr.map(cardHTML).join('')}</div>`;
     });
@@ -471,11 +471,11 @@ main.addEventListener('click',e=>{
   if(mp){ const gq=mp.dataset.map;
     const wrap=mp.closest('.cbody').querySelector('.mapwrap');
     const open=wrap.classList.toggle('open'); mp.classList.toggle('on',open);
-    mp.innerHTML = open ? '‚úñÔ∏è Close map' : 'üó∫Ô∏è Map';
+    mp.innerHTML = open ? '\u2716\ufe0f Close map' : '\u{1F5FA}\ufe0f Map';
     if(open && !wrap.dataset.loaded){
       wrap.dataset.loaded='1';
       wrap.innerHTML=`<iframe loading="lazy" src="https://maps.google.com/maps?q=${gq}&z=16&output=embed"></iframe>`+
-        `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${gq}" target="_blank">‚ÜóÔ∏è Open in Google Maps</a>`;
+        `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${gq}" target="_blank">\u2197\ufe0f Open in Google Maps</a>`;
     }
     return; }
   const ap=e.target.closest('[data-addphoto]');
